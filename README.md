@@ -46,10 +46,11 @@ Study-Buddy-AI/
 ├── app.py
 ├── requirements.txt
 ├── README.md
-├── screenshots/
 ├── REFLECTION.md
 ├── PROMPTS.md
-└── .gitignore
+├── .gitignore
+└── screenshots/
+
 ```
 
 ---
