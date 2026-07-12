@@ -215,7 +215,7 @@ st.markdown(
 """
 <div class='footer'>
 
-Made with ❤️ using Streamlit + Google Gemini
+Made with ❤️ using Streamlit
 
 </div>
 """,
