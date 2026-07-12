@@ -1,33 +1,24 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 from datetime import datetime
 
-# ----------------------------
-# Configure Gemini API
-# ----------------------------
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY"))
+api_key = st.secrets.get(
+    "GEMINI_API_KEY",
+    os.getenv("GEMINI_API_KEY")
+)
 
-genai.configure(api_key=api_key)
+client = genai.Client(api_key=api_key)
 
-model = genai.GenerativeModel("gemini-2.5-flash")
-
-# ----------------------------
-# Page Configuration
-# ----------------------------
 st.set_page_config(
     page_title="AI Learning Buddy",
     page_icon="🎓",
     layout="wide"
 )
-
-# ----------------------------
-# Sidebar
-# ----------------------------
 st.sidebar.title("📚 AI Learning Buddy")
 
 st.sidebar.info(
@@ -50,18 +41,12 @@ st.sidebar.write("• Streamlit")
 st.sidebar.write("• Google Gemini")
 st.sidebar.write("• Python")
 
-# ----------------------------
-# Main Page
-# ----------------------------
 st.title("🎓 AI Learning Buddy")
 
 st.write(
 "Learn any concept quickly with AI-powered explanations, examples and quizzes."
 )
 
-# ----------------------------
-# Session History
-# ----------------------------
 if "history" not in st.session_state:
     st.session_state.history = []
 
@@ -128,7 +113,10 @@ Mention correct answer after every question.
 
         with st.spinner("Generating AI Response..."):
 
-            response=model.generate_content(prompt)
+            response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+            )
 
             answer=response.text
 
