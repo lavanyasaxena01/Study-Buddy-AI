@@ -1,9 +1,9 @@
-import streamlit as st
-from google import genai
+import os
 from datetime import datetime
 
-import os
+import streamlit as st
 from dotenv import load_dotenv
+from google import genai
 
 load_dotenv()
 
@@ -19,41 +19,62 @@ st.set_page_config(
     page_icon="🎓",
     layout="wide"
 )
-st.sidebar.title("📚 AI Learning Buddy")
 
-st.sidebar.info(
-"""
-This AI Buddy helps you:
+st.markdown("""
+<style>
 
-✅ Explain Concepts
+.main{
+    padding-top:1rem;
+}
 
-✅ Real-life Examples
+.title{
+    text-align:center;
+    font-size:45px;
+    font-weight:bold;
+    color:#4F8BF9;
+}
 
-✅ Generate Quiz
+.subtitle{
+    text-align:center;
+    color:gray;
+    margin-bottom:30px;
+}
 
-✅ Ask Anything
-"""
-)
+.stButton>button{
+    width:100%;
+    border-radius:12px;
+    height:3em;
+    font-size:18px;
+}
 
-st.sidebar.markdown("---")
-st.sidebar.write("Developed using")
-st.sidebar.write("• Streamlit")
-st.sidebar.write("• Google Gemini")
-st.sidebar.write("• Python")
+.response-box{
+    background:#f5f5f5;
+    padding:20px;
+    border-radius:15px;
+    border-left:6px solid #4F8BF9;
+}
 
-st.title("🎓 AI Learning Buddy")
+.footer{
+    text-align:center;
+    color:gray;
+    margin-top:40px;
+}
 
-st.write(
-"Learn any concept quickly with AI-powered explanations, examples and quizzes."
-)
+</style>
+""", unsafe_allow_html=True)
 
-if "history" not in st.session_state:
-    st.session_state.history = []
+st.markdown("<div class='title'>🎓 AI Learning Buddy</div>", unsafe_allow_html=True)
 
-topic = st.text_input("📖 Enter Topic")
+st.markdown(
+"<div class='subtitle'>Learn Anything with Google Gemini AI</div>",
+unsafe_allow_html=True)
 
-activity = st.selectbox(
-    "Choose Activity",
+st.sidebar.title("📚 Navigation")
+
+st.sidebar.success("Choose a learning activity")
+
+activity = st.sidebar.selectbox(
+    "Activity",
     [
         "Explain Concept",
         "Real-Life Example",
@@ -62,12 +83,37 @@ activity = st.selectbox(
     ]
 )
 
-difficulty = st.select_slider(
-    "Difficulty Level",
-    ["Beginner","Intermediate","Advanced"]
+difficulty = st.sidebar.select_slider(
+    "Difficulty",
+    [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+    ]
 )
 
-if st.button("🚀 Generate"):
+st.sidebar.markdown("---")
+
+st.sidebar.info(
+"""
+Developed using
+
+• Streamlit
+
+• Google Gemini
+
+• Python
+"""
+)
+
+if "history" not in st.session_state:
+    st.session_state.history=[]
+
+topic = st.text_input(
+    "📖 Enter your Topic"
+)
+
+if st.button("🚀 Generate Response"):
 
     if topic.strip()=="":
 
@@ -78,88 +124,102 @@ if st.button("🚀 Generate"):
         if activity=="Explain Concept":
 
             prompt=f"""
+You are an expert teacher.
+
 Explain {topic} for a {difficulty} learner.
 
-Use:
-• Simple language
-• Bullet points
-• Important keywords
-• Summary at the end.
+Use headings.
+
+Use bullet points.
+
+End with a short summary.
 """
 
         elif activity=="Real-Life Example":
 
             prompt=f"""
-Give a simple real-life example to explain {topic}.
+Explain {topic} using one real-life example.
+
+Keep it easy to understand.
 """
 
         elif activity=="Generate Quiz":
 
             prompt=f"""
-Create 5 MCQs on {topic}.
+Generate 5 MCQs on {topic}.
 
-Each question should have:
-A
-B
-C
-D
+Each question should have
 
-Mention correct answer after every question.
+A)
+
+B)
+
+C)
+
+D)
+
+Mention the correct answer below every question.
 """
 
         else:
 
             prompt=topic
 
-        with st.spinner("Generating AI Response..."):
+        with st.spinner("🤖 Gemini is Thinking..."):
 
             response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
+                model="gemini-2.5-flash",
+                contents=prompt
             )
 
-            answer=response.text
+            answer = response.text
 
-            st.success("Generated Successfully!")
+        st.success("Response Generated!")
 
-            st.markdown(answer)
+        st.markdown(
+            f"<div class='response-box'>{answer}</div>",
+            unsafe_allow_html=True
+        )
 
-            st.download_button(
-                "📥 Download Response",
-                answer,
-                file_name="AI_Response.txt"
-            )
+        st.download_button(
+            "📥 Download Response",
+            answer,
+            file_name="AI_Response.txt"
+        )
 
-            st.session_state.history.append(
-                {
-                    "time":datetime.now().strftime("%H:%M"),
-                    "topic":topic,
-                    "activity":activity
-                }
-            )
+        st.session_state.history.append(
+            {
+                "time":datetime.now().strftime("%I:%M %p"),
+                "topic":topic,
+                "activity":activity
+            }
+        )
 
-# ----------------------------
-# History
-# ----------------------------
 st.markdown("---")
 
 st.subheader("📜 Learning History")
 
 if len(st.session_state.history)==0:
 
-    st.write("No activity yet.")
+    st.info("No previous learning sessions.")
 
 else:
 
     for item in reversed(st.session_state.history):
 
         st.write(
-            f"🕒 {item['time']} | **{item['topic']}** ({item['activity']})"
+            f"🕒 {item['time']} • {item['topic']} • {item['activity']}"
         )
 
-# ----------------------------
-# Footer
-# ----------------------------
 st.markdown("---")
 
-st.caption("Made with ❤️ using Streamlit & Google Gemini")
+st.markdown(
+"""
+<div class='footer'>
+
+Made with ❤️ using Streamlit + Google Gemini
+
+</div>
+""",
+unsafe_allow_html=True
+)
