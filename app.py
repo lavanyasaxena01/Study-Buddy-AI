@@ -98,8 +98,6 @@ Developed using
 
 • Streamlit
 
-• Google Gemini
-
 • Python
 """
 )
