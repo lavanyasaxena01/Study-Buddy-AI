@@ -46,6 +46,7 @@ Study-Buddy-AI/
 ├── app.py
 ├── requirements.txt
 ├── README.md
+├── screenshots/
 └── .gitignore
 ```
 
