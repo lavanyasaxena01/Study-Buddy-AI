@@ -47,6 +47,8 @@ Study-Buddy-AI/
 ├── requirements.txt
 ├── README.md
 ├── screenshots/
+├── REFLECTION.md
+├── PROMPTS.md
 └── .gitignore
 ```
 
