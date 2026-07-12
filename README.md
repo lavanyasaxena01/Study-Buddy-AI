@@ -50,6 +50,10 @@ Study-Buddy-AI/
 ├── PROMPTS.md
 ├── .gitignore
 └── screenshots/
+    ├── home.png
+    ├── explanation.png
+    ├── quiz.png
+    └── example.png
 
 ```
 
